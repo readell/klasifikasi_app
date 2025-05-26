@@ -9,15 +9,6 @@ from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
 from sklearn.feature_extraction.text import TfidfVectorizer
 import matplotlib.pyplot as plt
 
-
-'''
-def clean_tweet_text(text):
-    text = re.sub(r'[^w/s]', '', text)  # Menghapus tanda baca
-    text = re.sub(r'[-+]?[0-9]+', '', text)  # Menghapus angka
-    text = text.lower()  # Mengubah teks menjadi huruf kecil
-    text = text.strip()  # Menghapus spasi di awal dan akhir
-    return text
-'''
 def clean_tweet_text(text):
     if not isinstance(text, str):
         return ""  # atau bisa return np.nan
@@ -25,18 +16,12 @@ def clean_tweet_text(text):
     text = text.lower().strip()
     return text
 
-#key_norm = pd.read_csv('./dataset/key_norm.csv')
-#def text_normalize(text):
-    #text = ' '.join([key_norm[key_norm['singkat'] == word]['hasil'].values[0]
-                     #if (key_norm['singkat'] == word).any()
-                     #else word for word in text.split()])
-    #return text.lower()
-
 def tokenized(text):
     #return re.split(r'W+', text)
     text = nltk.word_tokenize(text)
     return text
 
+nltk.download('stopwords')
 stopwords = nltk.corpus.stopwords.words('indonesian')
 def remove_stopwords(text):
     more_stopwords = ["kalo", "aja", "gak", "kah"]
