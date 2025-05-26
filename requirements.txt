@@ -4,5 +4,4 @@ scikit-learn
 nltk
 Sastrawi
 matplotlib
-pickle
-re
+
