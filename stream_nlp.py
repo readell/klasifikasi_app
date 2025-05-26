@@ -16,6 +16,7 @@ def clean_tweet_text(text):
     text = text.lower().strip()
     return text
 
+nltk.download('punkt')
 def tokenized(text):
     #return re.split(r'W+', text)
     text = nltk.word_tokenize(text)
