@@ -57,7 +57,9 @@ with col2:
         ✅ **Normalisasi**: Mengubah kata singkatan menjadi bentuk baku.  
         ✅ **Tokenisasi & Stopwords Removal**: Memisahkan kata dan menghapus kata-kata tidak penting.  
         ✅ **Stemming**: Mengubah kata ke bentuk dasarnya.  
-        ✅ **Prediksi**: Model akan memprediksi apakah chat bersifat **Negatif** atau **Positif**.  
+        ✅ **Prediksi**: Model akan memprediksi apakah chat bersifat **Negatif** atau **Positif**. 
+                          Jika presentase **Negatif** maka percakapan mengindikasikan prostitusi online, 
+                          jika presentase **Positif** maka percakapan tidak mengindikasikan prostitusi online.
         """, unsafe_allow_html=True)
 
 with col1:
