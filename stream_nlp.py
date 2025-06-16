@@ -97,8 +97,8 @@ with col1:
             # ❗Hapus baris yang kosong setelah preprocessing
             data = data[data['message'].str.strip() != '']
 
-            st.write("Hasil Preprocessing:")
-            st.dataframe(data['message'], use_container_width=True) 
+            #st.write("Hasil Preprocessing:")
+            #st.dataframe(data['message'], use_container_width=True) 
 
             data_input_vec = vectorizer.transform(data['message'])
             predictions = model_fraud.predict(data_input_vec)
