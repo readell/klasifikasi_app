@@ -54,7 +54,6 @@ with col2:
         Dashboard ini menggunakan model **Naïve Bayes**.  
         Chat yang diunggah dalam format **CSV** akan diproses melalui beberapa tahap:             
         ✅ **Pembersihan Teks**: Menghapus karakter khusus, angka, dan mengonversi ke huruf kecil.  
-        ✅ **Normalisasi**: Mengubah kata singkatan menjadi bentuk baku.  
         ✅ **Tokenisasi & Stopwords Removal**: Memisahkan kata dan menghapus kata-kata tidak penting.  
         ✅ **Stemming**: Mengubah kata ke bentuk dasarnya.  
         ✅ **Prediksi**: Model akan memprediksi apakah chat bersifat **Negatif** atau **Positif**. 
