@@ -72,22 +72,21 @@ vectorizer = pickle.load(open(os.path.join(base_dir, 'tfidf_model.sav'), 'rb'))
 
 # ============= Header Dashboard =============
 st.markdown("""
-<h1 style='font-size: 35px; font-weight: bold;'>📊 Dashboard Prediksi Chat</h1>
-<p style='font-size: 16px; color: #555;'>Analisis otomatis untuk memprediksi apakah percakapan indikatif atau non-indikatif.</p>
+<h1 style='font-size: 35px; font-weight: bold;'> Dashboard Prediksi Chat</h1>
+<p style='font-size: 16px; color: #555;'>Dashboard analisis percakapan prostitusi atau tidak prostitusi.</p>
 <hr>
 """, unsafe_allow_html=True)
 
 # ============= Sidebar =============
 with st.sidebar:
-    st.header("📂 Upload Data")
+    st.header("Upload File")
     uploaded_file = st.file_uploader("Unggah file CSV", type=["csv"])
 
     st.markdown("---")
     st.subheader("ℹ Petunjuk")
-    st.write("• File harus memiliki kolom *message*")
-    st.write("• Klik Mulai Analisis")
+    st.write("• File berformat CSV")
 
-    start_process = st.button("🚀 Mulai Analisis")
+    start_process = st.button("Mulai Analisis")
 
 # ============= Konten Utama =============
 if uploaded_file is not None:
@@ -96,11 +95,11 @@ if uploaded_file is not None:
 
     # Data awal hanya ditampilkan jika tombol belum ditekan
     if not start_process:
-        st.subheader("📄 Data Awal")
+        st.subheader("Data Awal")
         st.dataframe(data, use_container_width=True)
 
     if "message" not in data.columns:
-        st.error("❌ Kolom 'message' tidak ditemukan.")
+        st.error("Format atau jenis file tidak cocok")
         st.stop()
 
     data = data.dropna(subset=["message"])
@@ -136,16 +135,16 @@ if uploaded_file is not None:
         st.markdown("---")
 
         # ============= Tabel & Grafik Berdampingan =============
-        st.subheader("📌 Hasil Analisis")
+        st.subheader("Hasil Analisis")
 
         col_table, col_chart = st.columns([2, 1])
 
         with col_table:
-            st.markdown("### 📄 Hasil Prediksi")
+            st.markdown("### Hasil Prediksi")
             st.dataframe(data[['message', 'predicted_sentiment']], use_container_width=True)
 
         with col_chart:
-            st.markdown("### 📊 Distribusi Sentimen")
+            st.markdown("### Distribusi Sentimen")
             fig, ax = plt.subplots(figsize=(3, 2))
             ax.bar(sentiment_counts.index.astype(str), sentiment_counts.values, alpha=0.8)
             for i, val in enumerate(sentiment_counts.values):
@@ -165,7 +164,7 @@ if uploaded_file is not None:
 
         # ============= Informasi Distribusi =============
         st.markdown("""
-### 📌 Sentiment Distribution
+### Proses Analisis
 Proses analisis dilakukan melalui beberapa tahapan:
 - **Cleaning** → Menghapus karakter khusus, angka, huruf tidak penting  
 - **Tokenisasi & Stopwords Removal** → Memisahkan kata dan menghapus kata tidak penting  
