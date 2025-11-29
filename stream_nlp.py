@@ -4,6 +4,7 @@ import pandas as pd
 import pickle
 import re
 import os
+nltk.download('punkt_tab')
 import nltk
 from nltk import word_tokenize
 from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
