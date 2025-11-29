@@ -4,4 +4,5 @@ scikit-learn
 nltk
 Sastrawi
 matplotlib
+os
 
