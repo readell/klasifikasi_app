@@ -3,137 +3,170 @@ st.set_page_config(page_title="Dashboard Prediksi Chat", layout="wide")
 import pandas as pd
 import pickle
 import re
+import os
 import nltk
 from nltk import word_tokenize
 from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
-from sklearn.feature_extraction.text import TfidfVectorizer
 import matplotlib.pyplot as plt
 
+# ============= CSS Custom =============
+st.markdown("""
+<style>
+.block-container {
+    padding-top: 1rem;
+    padding-bottom: 0rem;
+}
+.metric-card {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    margin-bottom: 10px;
+}
+div.stButton > button:first-child {
+    background-color: #007bff;
+    color: white;
+    border-radius: 8px;
+    height: 50px;
+    width: 100%;
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+}
+div.stButton > button:hover {
+    background-color: #0056b3;
+}
+</style>
+""", unsafe_allow_html=True)
+
+# ============= Preprocessing =============
 def clean_tweet_text(text):
     if not isinstance(text, str):
-        return ""  # atau bisa return np.nan
-    text = re.sub(r'[^a-zA-Z\s]', '', text)  # hapus selain huruf dan spasi
+        return ""
+    text = re.sub(r'[^a-zA-Z\s]', '', text)
     text = text.lower().strip()
     return text
 
-nltk.download('punkt_tab')
+nltk.download('punkt')
 def tokenized(text):
-    #return re.split(r'W+', text)
-    text = nltk.word_tokenize(text)
-    return text
+    return nltk.word_tokenize(text)
 
 nltk.download('stopwords')
 stopwords = nltk.corpus.stopwords.words('indonesian')
 def remove_stopwords(text):
     more_stopwords = ["kalo", "aja", "gak", "kah"]
     stopwords.extend(more_stopwords)
-    text = [word for word in text if word not in stopwords]
-    return text   
+    return [word for word in text if word not in stopwords]
 
 def stemming(text):
     factory = StemmerFactory()
     stemmer = factory.create_stemmer()
-    text = [stemmer.stem(token) for token in text]
-    return text
+    return [stemmer.stem(token) for token in text]
 
-model_fraud = pickle.load(open('model_nb.sav', 'rb'))
-vectorizer = pickle.load(open('tfidf_model.sav', 'rb'))
+# ============= Load Model =============
+base_dir = os.path.dirname(os.path.abspath(__file__))
+model_fraud = pickle.load(open(os.path.join(base_dir, 'model_nb.sav'), 'rb'))
+vectorizer = pickle.load(open(os.path.join(base_dir, 'tfidf_model.sav'), 'rb'))
 
+# ============= Header Dashboard =============
+st.markdown("""
+<h1 style='font-size: 35px; font-weight: bold;'>📊 Dashboard Prediksi Chat</h1>
+<p style='font-size: 16px; color: #555;'>Analisis otomatis untuk memprediksi apakah percakapan indikatif atau non-indikatif.</p>
+<hr>
+""", unsafe_allow_html=True)
 
-col1, col2 = st.columns([2, 2.5]) 
-with col1:
-    st.title('Dashboard Prediksi Chat')
-    # upload file
+# ============= Sidebar =============
+with st.sidebar:
+    st.header("📂 Upload Data")
     uploaded_file = st.file_uploader("Unggah file CSV", type=["csv"])
 
-    
-with col2:
-    # tambah keterangan 
-    st.markdown("### Keterangan")
-    st.markdown("""
-        Dashboard ini menggunakan model **Naïve Bayes**.  
-        Chat yang diunggah dalam format **CSV** akan diproses melalui beberapa tahap:             
-        ✅ **Pembersihan Teks**: Menghapus karakter khusus, angka, dan mengonversi ke huruf kecil.  
-        ✅ **Tokenisasi & Stopwords Removal**: Memisahkan kata dan menghapus kata-kata tidak penting.  
-        ✅ **Stemming**: Mengubah kata ke bentuk dasarnya.  
-        ✅ **Prediksi**: Model akan memprediksi apakah chat bersifat **Negatif** atau **Positif**. 
-                          Jika presentase **Negatif** maka percakapan mengindikasikan prostitusi online, 
-                          jika presentase **Positif** maka percakapan tidak mengindikasikan prostitusi online.
-        """, unsafe_allow_html=True)
+    st.markdown("---")
+    st.subheader("ℹ Petunjuk")
+    st.write("• File harus memiliki kolom *message*")
+    st.write("• Klik Mulai Analisis")
 
-with col1:
-    if uploaded_file is not None:
-        data = pd.read_csv(uploaded_file)
-        st.dataframe(data)
+    start_process = st.button("🚀 Mulai Analisis")
 
-        if 'message' in data.columns:
-            data = data[['message']] 
+# ============= Konten Utama =============
+if uploaded_file is not None:
 
-            data = data.dropna(subset=['message'])
-            data = data[data['message'].str.strip() != '']
+    data = pd.read_csv(uploaded_file)
 
-        if st.button('Mulai Analisis'):
-        	# Pembersihan teks
-            data['message'] = data['message'].apply(clean_tweet_text)
-            
-            # Normalisasi teks
-            #data['message'] = data['message'].apply(text_normalize)
+    # Data awal hanya ditampilkan jika tombol belum ditekan
+    if not start_process:
+        st.subheader("📄 Data Awal")
+        st.dataframe(data, use_container_width=True)
 
-            # Tokenisasi
-            data['message'] = data['message'].apply(tokenized)
-            
+    if "message" not in data.columns:
+        st.error("❌ Kolom 'message' tidak ditemukan.")
+        st.stop()
 
-            # Menghapus stopwords
-            data['message'] = data['message'].apply(remove_stopwords)
-           
+    data = data.dropna(subset=["message"])
+    data = data[data["message"].str.strip() != ""]
 
-            # Stemming
-            data['message'] = data['message'].apply(stemming)
-           
+    if start_process:
 
-            data['message'] = data['message'].apply(lambda x: ' '.join(x))
+        # ======== PREPROCESSING ========
+        data['message'] = data['message'].apply(clean_tweet_text)
+        data['message'] = data['message'].apply(tokenized)
+        data['message'] = data['message'].apply(remove_stopwords)
+        data['message'] = data['message'].apply(stemming)
+        data['message'] = data['message'].apply(lambda x: " ".join(x))
+        data = data[data['message'].str.strip() != ""]
 
-            # ❗Hapus baris yang kosong setelah preprocessing
-            data = data[data['message'].str.strip() != '']
+        data_vectors = vectorizer.transform(data['message'])
+        data['predicted_sentiment'] = model_fraud.predict(data_vectors)
 
-            #st.write("Hasil Preprocessing:")
-            #st.dataframe(data['message'], use_container_width=True) 
+        sentiment_counts = data['predicted_sentiment'].value_counts()
+        total_data = len(data)
+        total_positive = sentiment_counts.get(1, 0)
+        total_negative = sentiment_counts.get(0, 0)
 
-            data_input_vec = vectorizer.transform(data['message'])
-            predictions = model_fraud.predict(data_input_vec)
-            data['predicted_sentiment'] = predictions
+        # ============= Kartu Informasi =============
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.markdown(f"<div class='metric-card'><h3>{total_data}</h3><p>Total Data</p></div>", unsafe_allow_html=True)
+        with col2:
+            st.markdown(f"<div class='metric-card'><h3 style='color:#2ecc71'>{total_positive}</h3><p>Positif</p></div>", unsafe_allow_html=True)
+        with col3:
+            st.markdown(f"<div class='metric-card'><h3 style='color:#e74c3c'>{total_negative}</h3><p>Negatif</p></div>", unsafe_allow_html=True)
 
-            st.write("Hasil Prediksi:")
-            st.dataframe(data[['message', 'predicted_sentiment']], use_container_width=True)  # Menampilkan kolom 'message' dan 'predicted_sentiment'
+        st.markdown("---")
 
-            sentiment_counts = data['predicted_sentiment'].value_counts()
-            total_count = sentiment_counts.sum()
-            sentiment_percentages = (sentiment_counts / total_count) * 100
-            plt.style.use('seaborn-v0_8-darkgrid')
+        # ============= Tabel & Grafik Berdampingan =============
+        st.subheader("📌 Hasil Analisis")
 
-            st.markdown("<h5>📊 Hasil Klasifikasi:</h5>", unsafe_allow_html=True)
+        col_table, col_chart = st.columns([2, 1])
 
-            fig, ax = plt.subplots(figsize= (3, 2))
+        with col_table:
+            st.markdown("### 📄 Hasil Prediksi")
+            st.dataframe(data[['message', 'predicted_sentiment']], use_container_width=True)
 
-            colors = ['#3498db', '#e74c3c', '#2ecc71', '#f1c40f'][:len(sentiment_counts)]
-            
-            ax.bar(sentiment_counts.index, sentiment_counts.values, 
-                    color=colors, width=0.5, alpha=0.8, edgecolor='black', linewidth=0.7)
-                 
-            for i, count in enumerate(sentiment_counts.values):
-                percentage = f'{sentiment_percentages[i]:.2f}%'
-                ax.text(i, count + 0.3, f'{count} ({percentage})', ha='center', va='bottom', fontsize=7, color='black')
-
-            ax.set_ylim(0, max(sentiment_counts.values) * 1.3)
-            ax.tick_params(axis='both', labelsize=7, color='black')  # Mengecilkan angka di sumbu X dan Y
-            ax.yaxis.grid(True, linestyle='--', alpha=0.7)
-            ax.set_title('Distribusi Sentimen', fontsize=8)
-            ax.set_xlabel('Prediksi', fontsize=7)
-            ax.set_ylabel('Jumlah', fontsize=7)
-        
+        with col_chart:
+            st.markdown("### 📊 Distribusi Sentimen")
+            fig, ax = plt.subplots(figsize=(3, 2))
+            ax.bar(sentiment_counts.index.astype(str), sentiment_counts.values, alpha=0.8)
+            for i, val in enumerate(sentiment_counts.values):
+                ax.text(i, val + 0.1, str(val), ha='center', fontsize=7)
+            ax.set_xlabel("Label", fontsize=7)
+            ax.set_ylabel("Jumlah", fontsize=7)
+            ax.set_title("Distribusi Prediksi", fontsize=9)
             plt.tight_layout()
             st.pyplot(fig)
 
-    
+            st.download_button(
+                label="⬇ Download Hasil",
+                data=data.to_csv(index=False),
+                file_name="hasil_prediksi.csv",
+                mime="text/csv"
+            )
 
-
+        # ============= Informasi Distribusi =============
+        st.markdown("""
+### 📌 Sentiment Distribution
+Proses analisis dilakukan melalui beberapa tahapan:
+- **Cleaning** → Menghapus karakter khusus, angka, huruf tidak penting  
+- **Tokenisasi & Stopwords Removal** → Memisahkan kata dan menghapus kata tidak penting  
+- **Stemming** → Mengubah kata ke bentuk dasar  
+""")
