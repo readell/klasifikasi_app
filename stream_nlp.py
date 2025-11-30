@@ -128,9 +128,9 @@ if uploaded_file is not None:
         with col1:
             st.markdown(f"<div class='metric-card'><h3>{total_data}</h3><p>Total Data</p></div>", unsafe_allow_html=True)
         with col2:
-            st.markdown(f"<div class='metric-card'><h3 style='color:#2ecc71'>{total_positive}</h3><p>Negative/Indikasi Prostitusi </p></div>", unsafe_allow_html=True)
+            st.markdown(f"<div class='metric-card'><h3 style='color:#2ecc71'>{total_positive}</h3><p> Positive/Tidak Indikasi Prostitusi </p></div>", unsafe_allow_html=True)
         with col3:
-            st.markdown(f"<div class='metric-card'><h3 style='color:#e74c3c'>{total_negative}</h3><p>Positive/Tidak Indikasi Prostitusi </p></div>", unsafe_allow_html=True)
+            st.markdown(f"<div class='metric-card'><h3 style='color:#e74c3c'>{total_negative}</h3><p>Negative/Indikasi Prostitusi </p></div>", unsafe_allow_html=True)
 
         st.markdown("---")
 
@@ -165,8 +165,14 @@ if uploaded_file is not None:
         # ============= Informasi Distribusi =============
         st.markdown("""
 ### Proses Analisis
-Proses analisis dilakukan melalui beberapa tahapan:
-- **Cleaning** → Menghapus karakter khusus, angka, huruf tidak penting  
+Dashboard ini menggunakan model algoritma **Naive Bayes.
+File yang diunggah dalam format CSV akan diproses melalui beberapa tahapan:
+
+- **Cleaning**  Menghapus karakter khusus, angka, huruf tidak penting  
+- **Normalisasi**  Mengubah kata singkatan menjadi bentuk aslinya
 - **Tokenisasi & Stopwords Removal** → Memisahkan kata dan menghapus kata tidak penting  
 - **Stemming** → Mengubah kata ke bentuk dasar  
+- **Prediksi** → Model memprediksi apakah chat bersifat **Negative atau **Positive
+
+** Positive mengindikasikan file tidak prostitusi ** Negative mengindikasikan file prostitusi
 """)
