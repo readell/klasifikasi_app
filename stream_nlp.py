@@ -192,4 +192,4 @@ if uploaded_file is not None:
             )
 
         # ============= Informasi Distribusi =============
-        st.markdown("""
+
