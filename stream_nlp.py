@@ -117,10 +117,18 @@ if uploaded_file is not None:
 
         data_vectors = vectorizer.transform(data['message'])
         data['predicted_sentiment'] = model_fraud.predict(data_vectors)
-
-        # Pastikan tipe datanya benar
-        data['predicted_sentiment'] = data['predicted_sentiment'].astype(int)
-
+        
+        # Normalisasi nilai sentiment agar seragam
+        data['predicted_sentiment'] = data['predicted_sentiment'].astype(str).str.strip().str.lower()
+        
+        # Mapping teks ke angka
+        mapping = {
+            'positive': 1,
+            'negative': 0,
+        }
+        
+        data['predicted_sentiment'] = data['predicted_sentiment'].map(mapping)
+        
         # Hitung jumlah
         total_data = len(data)
         total_positive = (data['predicted_sentiment'] == 1).sum()
