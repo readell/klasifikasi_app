@@ -85,7 +85,7 @@ with st.sidebar:
     st.markdown("---")
     st.subheader("ℹ Petunjuk")
     st.write("• File berformat CSV")
-       st.markdown("""
+    st.markdown("""
         ### Proses Analisis
         Dashboard ini menggunakan model algoritma Naive Bayes.
         File yang diunggah dalam format CSV akan diproses melalui beberapa tahapan:
