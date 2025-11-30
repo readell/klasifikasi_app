@@ -73,7 +73,7 @@ vectorizer = pickle.load(open(os.path.join(base_dir, 'tfidf_model.sav'), 'rb'))
 # ============= Header Dashboard =============
 st.markdown("""
 <h1 style='font-size: 35px; font-weight: bold;'> Dashboard Prediksi Chat</h1>
-<p style='font-size: 16px; color: #555;'>Dashboard analisis percakapan prostitusi atau tidak prostitusi.</p>
+<p style='font-size: 16px; color: #555;'>Dashboard analisis percakapan prostitusi dan tidak prostitusi.</p>
 <hr>
 """, unsafe_allow_html=True)
 
@@ -128,9 +128,9 @@ if uploaded_file is not None:
         with col1:
             st.markdown(f"<div class='metric-card'><h3>{total_data}</h3><p>Total Data</p></div>", unsafe_allow_html=True)
         with col2:
-            st.markdown(f"<div class='metric-card'><h3 style='color:#2ecc71'>{total_positive}</h3><p>Positif</p></div>", unsafe_allow_html=True)
+            st.markdown(f"<div class='metric-card'><h3 style='color:#2ecc71'>{total_positive}</h3><p>Negative/Indikasi Prostitusi </p></div>", unsafe_allow_html=True)
         with col3:
-            st.markdown(f"<div class='metric-card'><h3 style='color:#e74c3c'>{total_negative}</h3><p>Negatif</p></div>", unsafe_allow_html=True)
+            st.markdown(f"<div class='metric-card'><h3 style='color:#e74c3c'>{total_negative}</h3><p>Positive/Tidak Indikasi Prostitusi </p></div>", unsafe_allow_html=True)
 
         st.markdown("---")
 
