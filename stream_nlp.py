@@ -95,6 +95,20 @@ if uploaded_file is not None:
 
     # Data awal hanya ditampilkan jika tombol belum ditekan
     if not start_process:
+        ### Proses Analisis
+        Dashboard ini menggunakan model algoritma Naive Bayes.
+        File yang diunggah dalam format CSV akan diproses melalui beberapa tahapan:
+        
+        - Cleaning → menghapus karakter tidak penting  
+        - Normalisasi  
+        - Tokenisasi & Stopwords Removal  
+        - Stemming  
+        - Prediksi → menentukan apakah chat bersifat "Positive" atau "Negative"
+        
+        **Positive** = Tidak ada indikasi prostitusi  
+        **Negative** = Ada indikasi prostitusi
+        """)
+
         st.subheader("Data Awal")
         st.dataframe(data, use_container_width=True)
 
@@ -182,16 +196,3 @@ if uploaded_file is not None:
 
         # ============= Informasi Distribusi =============
         st.markdown("""
-### Proses Analisis
-Dashboard ini menggunakan model algoritma Naive Bayes.
-File yang diunggah dalam format CSV akan diproses melalui beberapa tahapan:
-
-- Cleaning → menghapus karakter tidak penting  
-- Normalisasi  
-- Tokenisasi & Stopwords Removal  
-- Stemming  
-- Prediksi → menentukan apakah chat bersifat "Positive" atau "Negative"
-
-**Positive** = Tidak ada indikasi prostitusi  
-**Negative** = Ada indikasi prostitusi
-""")
