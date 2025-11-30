@@ -118,19 +118,23 @@ if uploaded_file is not None:
         data_vectors = vectorizer.transform(data['message'])
         data['predicted_sentiment'] = model_fraud.predict(data_vectors)
 
-        sentiment_counts = data['predicted_sentiment'].value_counts()
+        # Pastikan tipe datanya benar
+        data['predicted_sentiment'] = data['predicted_sentiment'].astype(int)
+
+        # Hitung jumlah
         total_data = len(data)
-        total_positive = sentiment_counts.get(1, 0)
-        total_negative = sentiment_counts.get(0, 0)
+        total_positive = (data['predicted_sentiment'] == 1).sum()
+        total_negative = (data['predicted_sentiment'] == 0).sum()
 
         # ============= Kartu Informasi =============
         col1, col2, col3 = st.columns(3)
         with col1:
             st.markdown(f"<div class='metric-card'><h3>{total_data}</h3><p>Total Data</p></div>", unsafe_allow_html=True)
         with col2:
-            st.markdown(f"<div class='metric-card'><h3 style='color:#2ecc71'>{total_positive}</h3><p> Positive/Tidak Indikasi Prostitusi </p></div>", unsafe_allow_html=True)
+            st.markdown(f"<div class='metric-card'><h3 style='color:#2ecc71'>{total_positive}</h3><p>Positive/Tidak Indikasi Prostitusi</p></div>", unsafe_allow_html=True)
         with col3:
-            st.markdown(f"<div class='metric-card'><h3 style='color:#e74c3c'>{total_negative}</h3><p>Negative/Indikasi Prostitusi </p></div>", unsafe_allow_html=True)
+            st.markdown(f"<div class='metric-card'><h3 style='color:#e74c3c'>{total_negative}</h3><p>Negative/Indikasi Prostitusi</p></div>", unsafe_allow_html=True)
+
 
         st.markdown("---")
 
