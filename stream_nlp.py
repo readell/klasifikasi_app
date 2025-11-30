@@ -117,22 +117,27 @@ if uploaded_file is not None:
 
         data_vectors = vectorizer.transform(data['message'])
         data['predicted_sentiment'] = model_fraud.predict(data_vectors)
-        
-        # Normalisasi nilai sentiment agar seragam
+
+        # Normalisasi nilai sentiment
         data['predicted_sentiment'] = data['predicted_sentiment'].astype(str).str.strip().str.lower()
-        
+
         # Mapping teks ke angka
         mapping = {
             'positive': 1,
             'negative': 0,
         }
-        
         data['predicted_sentiment'] = data['predicted_sentiment'].map(mapping)
-        
+
         # Hitung jumlah
         total_data = len(data)
         total_positive = (data['predicted_sentiment'] == 1).sum()
         total_negative = (data['predicted_sentiment'] == 0).sum()
+
+        # Buat variabel sentiment_counts (MENCEGAH ERROR)
+        sentiment_counts = pd.Series({
+            "Positive": total_positive,
+            "Negative": total_negative
+        })
 
         # ============= Kartu Informasi =============
         col1, col2, col3 = st.columns(3)
@@ -142,7 +147,6 @@ if uploaded_file is not None:
             st.markdown(f"<div class='metric-card'><h3 style='color:#2ecc71'>{total_positive}</h3><p>Positive/Tidak Indikasi Prostitusi</p></div>", unsafe_allow_html=True)
         with col3:
             st.markdown(f"<div class='metric-card'><h3 style='color:#e74c3c'>{total_negative}</h3><p>Negative/Indikasi Prostitusi</p></div>", unsafe_allow_html=True)
-
 
         st.markdown("---")
 
@@ -158,9 +162,11 @@ if uploaded_file is not None:
         with col_chart:
             st.markdown("### Distribusi Sentimen")
             fig, ax = plt.subplots(figsize=(3, 2))
-            ax.bar(sentiment_counts.index.astype(str), sentiment_counts.values, alpha=0.8)
+            ax.bar(sentiment_counts.index, sentiment_counts.values, alpha=0.8)
+
             for i, val in enumerate(sentiment_counts.values):
                 ax.text(i, val + 0.1, str(val), ha='center', fontsize=7)
+
             ax.set_xlabel("Label", fontsize=7)
             ax.set_ylabel("Jumlah", fontsize=7)
             ax.set_title("Distribusi Prediksi", fontsize=9)
@@ -177,14 +183,15 @@ if uploaded_file is not None:
         # ============= Informasi Distribusi =============
         st.markdown("""
 ### Proses Analisis
-Dashboard ini menggunakan model algoritma **Naive Bayes.
+Dashboard ini menggunakan model algoritma Naive Bayes.
 File yang diunggah dalam format CSV akan diproses melalui beberapa tahapan:
 
-- **Cleaning**  Menghapus karakter khusus, angka, huruf tidak penting  
-- **Normalisasi**  Mengubah kata singkatan menjadi bentuk aslinya
-- **Tokenisasi & Stopwords Removal** → Memisahkan kata dan menghapus kata tidak penting  
-- **Stemming** → Mengubah kata ke bentuk dasar  
-- **Prediksi** → Model memprediksi apakah chat bersifat **Negative atau **Positive
+- Cleaning → menghapus karakter tidak penting  
+- Normalisasi  
+- Tokenisasi & Stopwords Removal  
+- Stemming  
+- Prediksi → menentukan apakah chat bersifat "Positive" atau "Negative"
 
-** Positive mengindikasikan file tidak prostitusi ** Negative mengindikasikan file prostitusi
+**Positive** = Tidak ada indikasi prostitusi  
+**Negative** = Ada indikasi prostitusi
 """)
