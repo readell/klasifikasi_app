@@ -81,21 +81,12 @@ st.markdown("""
 with st.sidebar:
     st.header("Upload File")
     uploaded_file = st.file_uploader("Unggah file CSV", type=["csv"])
-
+    start_process = st.button("Mulai Analisis")
     st.markdown("---")
     st.subheader("ℹ Petunjuk")
     st.write("• File berformat CSV")
-
-    start_process = st.button("Mulai Analisis")
-
-# ============= Konten Utama =============
-if uploaded_file is not None:
-
-    data = pd.read_csv(uploaded_file)
-
-    # Data awal hanya ditampilkan jika tombol belum ditekan
-    if not start_process:
-        ### Proses Analisis
+    
+     ### Proses Analisis
         Dashboard ini menggunakan model algoritma Naive Bayes.
         File yang diunggah dalam format CSV akan diproses melalui beberapa tahapan:
         
@@ -109,6 +100,14 @@ if uploaded_file is not None:
         **Negative** = Ada indikasi prostitusi
         """)
 
+
+# ============= Konten Utama =============
+if uploaded_file is not None:
+
+    data = pd.read_csv(uploaded_file)
+
+    # Data awal hanya ditampilkan jika tombol belum ditekan
+    if not start_process:
         st.subheader("Data Awal")
         st.dataframe(data, use_container_width=True)
 
