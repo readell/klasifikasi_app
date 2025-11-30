@@ -85,22 +85,15 @@ with st.sidebar:
     st.markdown("---")
     st.subheader("ℹ Petunjuk")
     st.write("• File berformat CSV")
-    
-     ### Proses Analisis
-        Dashboard ini menggunakan model algoritma Naive Bayes.
-        File yang diunggah dalam format CSV akan diproses melalui beberapa tahapan:
-        
-        - Cleaning → menghapus karakter tidak penting  
-        - Normalisasi  
-        - Tokenisasi & Stopwords Removal  
-        - Stemming  
-        - Prediksi → menentukan apakah chat bersifat "Positive" atau "Negative"
-        
-        **Positive** = Tidak ada indikasi prostitusi  
-        **Negative** = Ada indikasi prostitusi
-        """)
-
-
+    st.write("•  Dashboard ini menggunakan model algoritma Naive Bayes. 
+                File yang diunggah dalam format CSV akan diproses melalui beberapa tahapan:")
+    st.write("•- Cleaning → menghapus karakter tidak penting  ")
+    st.write("•- Normalisasi  ")
+    st.write("•- Tokenisasi & Stopwords Removal  ")
+    st.write("•- Stemming  ")
+    st.write("•- Prediksi → menentukan apakah chat bersifat "Positive" atau "Negative"  ")
+     st.write("•- **Positive** = Tidak ada indikasi prostitusi  
+                **Negative** = Ada indikasi prostitusi ")
 # ============= Konten Utama =============
 if uploaded_file is not None:
 
