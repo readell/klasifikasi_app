@@ -188,8 +188,7 @@ if uploaded_file is not None:
                 #label="⬇ Download Hasil",
                 #data=data.to_csv(index=False),
                 #file_name="hasil_prediksi.csv",
-                #mime="text/csv"
-            )
+                #mime="text/csv")
 
         # ============= Informasi Distribusi =============
 
