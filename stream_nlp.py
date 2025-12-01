@@ -184,11 +184,11 @@ if uploaded_file is not None:
             plt.tight_layout()
             st.pyplot(fig)
 
-            st.download_button(
-                label="⬇ Download Hasil",
-                data=data.to_csv(index=False),
-                file_name="hasil_prediksi.csv",
-                mime="text/csv"
+            #st.download_button(
+                #label="⬇ Download Hasil",
+                #data=data.to_csv(index=False),
+                #file_name="hasil_prediksi.csv",
+                #mime="text/csv"
             )
 
         # ============= Informasi Distribusi =============
